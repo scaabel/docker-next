@@ -1,12 +1,14 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-
-const inter = Inter({ subsets: ['latin'] })
+import Header from "@/components/header";
+import Main from "@/components/main";
+import Share from "@/components/share";
 
 export default function Home() {
-  return (
-      <main className="container">
-      {/*  //*/}
-      </main>
-  )
+
+
+    return (
+        <main className="container mx-auto m-4">
+            <Header />
+            <Main />
+        </main>
+    )
 }
