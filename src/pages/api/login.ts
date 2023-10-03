@@ -2,6 +2,7 @@
 import {NextApiRequest, NextApiResponse} from "next";
 import {PrismaClient} from '@prisma/client'
 import crypto from 'crypto'
+import {setCookie} from "cookies-next";
 
 const prisma = new PrismaClient()
 
@@ -17,15 +18,27 @@ export default async function handler(
             const result = await prisma.user.findFirst({
                 where: {
                     email: email,
-                }
+                },
+                include: {
+                    items: true
+                },
             })
 
             if (result) {
                 let hashPwd = crypto.createHash('md5').update(password).digest('hex');
                 if (result.password === hashPwd) {
                     //login ok
-                    return res.status(200).json(result)
+                    setCookie('login_token', hashPwd, {
+                        req,
+                        res,
+                        maxAge: 60 * 60 * 24,
+                        httpOnly: true,
+                        path: '/'
+                    })
+
+                    return res.status(201).json(result)
                 }
+                return res.status(403)
             }
         } else {
             res.status(400)
